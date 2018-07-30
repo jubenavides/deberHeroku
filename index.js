@@ -1,10 +1,17 @@
 var express = require("express");
 var mongo = require('mongodb');
 var bodyParser = require("body-parser");
+const path = require('path')
+const PORT = process.env.PORT || 5000
+
 var app = express();
 
 var MongoClient = mongo.MongoClient;
 var url = "mongodb://root:root123@ds121091.mlab.com:21091/deber";
+
+app.get('/', function (req, res) {
+    res.send("Deber Arquitectura BEnavides, Achig");
+});
 
 app.get('/estudiante', function (req, res) {
     var jsonObj;
@@ -73,5 +80,10 @@ app.delete('/estudiante/:sec', function (req, res) {
     });
 });
 
-app.listen(4000);
-console.log("Servidor online por el 4000");
+app.listen(PORT, () => console.log(`Listening on ${ PORT }`));
+
+app.use(express.static(path.join(__dirname, 'public')))
+  .set('views', path.join(__dirname, 'views'))
+  .set('view engine', 'ejs')
+  .get('/', (req, res) => res.render('pages/index'));
+  
