@@ -10,7 +10,7 @@ var MongoClient = mongo.MongoClient;
 var url = "mongodb://root:root123@ds121091.mlab.com:21091/deber";
 
 app.get('/', function (req, res) {
-    res.send("Deber Arquitectura BEnavides, Achig");
+    res.send("Deber Arquitectura Jose Benavides, Jose Achig");
 });
 
 app.get('/estudiante', function (req, res) {
@@ -18,14 +18,14 @@ app.get('/estudiante', function (req, res) {
     MongoClient.connect(url, function (err, db) {
         if (err) throw err;
         var dbo = db.db("deber");
-            dbo.collection("estudiante").find({}).toArray(function (err, result) {
-                if (err) throw err;
-                console.log(result);
-                jsonObj = result;
-                res.setHeader('Content-Type', 'application/json');
-                res.send(result);
-                db.close();
-            });
+        dbo.collection("estudiante").find({}).toArray(function (err, result) {
+            if (err) throw err;
+            console.log(result);
+            jsonObj = result;
+            res.setHeader('Content-Type', 'application/json');
+            res.send(result);
+            db.close();
+        });
     });
 });
 
@@ -36,14 +36,14 @@ app.get('/estudiante/:cod', function (req, res) {
     MongoClient.connect(url, function (err, db) {
         if (err) throw err;
         var dbo = db.db("deber");
-            dbo.collection("estudiante").findOne({ cedula: code }, function (err, result) {
-                if (err) throw err;
-                console.log(result);
-                jsonObj = result;
-                res.setHeader('Content-Type', 'application/json');
-                res.send(result);
-                db.close();
-            });
+        dbo.collection("estudiante").findOne({ cedula: code }, function (err, result) {
+            if (err) throw err;
+            console.log(result);
+            jsonObj = result;
+            res.setHeader('Content-Type', 'application/json');
+            res.send(result);
+            db.close();
+        });
     });
 });
 
@@ -62,28 +62,44 @@ app.put('/estudiante/', function (req, res) {
 
 });
 
-
-app.delete('/estudiante/:sec', function (req, res) {
-    var jsonObj;
-    var code = req.params.sec;
+app.use(bodyParser.json());
+app.put('/estudiante/:ced', function (req, res) {
+    var jsonObj = req.body;
+    var code = req.params.ced;
     MongoClient.connect(url, function (err, db) {
         if (err) throw err;
         var dbo = db.db("deber");
-            dbo.collection("estudiante").deleteOne({ secuencia: code }, function (err, result) {
-                if (err) throw err;
-                console.log(result);
-                jsonObj = result;
-                res.setHeader('Content-Type', 'application/json');
-                res.send();
-                db.close();
-            });
+        dbo.collection("estudiante").findOneAndUpdate({ cedula: code }, jsonObj, function (err, result) {
+            if (err) throw err;
+            console.log(result);
+            jsonObj = result;
+            res.setHeader('Content-Type', 'application/json');
+            res.send();
+            db.close();
+        });
     });
 });
 
-app.listen(PORT, () => console.log(`Listening on ${ PORT }`));
+app.delete('/estudiante/:ced', function (req, res) {
+    var jsonObj;
+    var code = req.params.ced;
+    MongoClient.connect(url, function (err, db) {
+        if (err) throw err;
+        var dbo = db.db("deber");
+        dbo.collection("estudiante").deleteOne({ cedula: code }, function (err, result) {
+            if (err) throw err;
+            console.log(result);
+            jsonObj = result;
+            res.setHeader('Content-Type', 'application/json');
+            res.send();
+            db.close();
+        });
+    });
+});
+
+app.listen(PORT, () => console.log(`Listening on ${PORT}`));
 
 app.use(express.static(path.join(__dirname, 'public')))
-  .set('views', path.join(__dirname, 'views'))
-  .set('view engine', 'ejs')
-  .get('/', (req, res) => res.render('pages/index'));
-  
+    .set('views', path.join(__dirname, 'views'))
+    .set('view engine', 'ejs')
+    .get('/', (req, res) => res.render('pages/index'));
