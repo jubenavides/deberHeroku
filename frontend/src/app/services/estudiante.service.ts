@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
 import { Estudiante } from '../models/estudiante';
-
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +11,6 @@ export class EstudianteService {
   employees: Estudiante[];
   
   //readonly URL_API = 'http://deber-arqui.herokuapp.com/estudiante';
-
   readonly URL_API = 'http://damp-cove-56478.herokuapp.com/estudiante';
  // readonly URL_API = 'http://localhost:5000/estudiante';
 
@@ -32,9 +29,8 @@ putEmployee(employee: Estudiante) {
   return this.http.put(this.URL_API + `/${employee.cedula}`, Estudiante);
 }
 
-deleteEmployee(cedula: string) {
-  return this.http.delete(this.URL_API + `/${cedula}`);
+deleteEmployee(_id: string) {
+  return this.http.delete(this.URL_API + `/${_id}`);
 }
-
 
 }
